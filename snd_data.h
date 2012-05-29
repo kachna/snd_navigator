@@ -55,9 +55,9 @@ class SND_data
 		
 		void setPos(double posX, double posY, double posA) {x=posX; y=posY, yaw=posA; };
 
-		double getGoalX() { return goalX; }
-		double getGoalY() { return goalY; }
-		double getGoalA() { return goalA; }
+		double getGoalX() { return goal_vector[0][0]; }
+		double getGoalY() { return goal_vector[0][1]; }
+		double getGoalA() { return goal_vector[0][2]; }
 		
 		void setGoal(double x, double y, double a) {goalX = x; goalY = y; goalA = a; };
 		void setGoal(std::vector< std::vector<float> > goals) { goal_vector = goals; };

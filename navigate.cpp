@@ -26,7 +26,7 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
   
   data.setPos(x, y, a);
   
-  //ROS_INFO("Position: [%f, %f, %f]", x, y, a);
+  ROS_INFO("Position: [%f, %f, %f]", x, y, a);
 }
 
 void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
@@ -59,30 +59,32 @@ void readParams(ros::NodeHandle * node) {
 	XmlRpc::XmlRpcValue gY;
 	XmlRpc::XmlRpcValue gA;
 
+	ROS_INFO("getting goals ...");
 	node->getParam("goalsX", gX);
 	node->getParam("goalsY", gY);
 	node->getParam("goalsA", gA);
 	
-
+	//ROS_INFO("parsing goal X - %s ", gX.getType());
 
 	for (int i = 0; i < gX.size(); i++) {
-		std::vector<float> * f = new std::vector<float>();
-//		f->push_back(static_cast<double>(gX[i]));
-//		f->push_back(static_cast<double>(gY[i]));
-//		f->push_back(static_cast<double>(gA[i]));
-		data.goal_vector.push_back(*f);
+			std::cout <<" type: " << gX[i].getType() << std::endl;
+			std::vector<float> * f = new std::vector<float>();
+			f->push_back(static_cast<double>(gX[i]));
+			f->push_back(static_cast<double>(gY[i]));
+			f->push_back(static_cast<double>(gA[i]));
+			data.goal_vector.push_back(*f);
 	}
 	
 
 	data.setGoal(x, y, a);
-/*
+
 	
 	ROS_INFO("ROBOT RADUIS: %f", data.robot_radius);
 	ROS_INFO("MAX SPEED: %f", data.max_speed);
 	ROS_INFO("TURN RATE: %f", data.max_turn_rate);
 	ROS_INFO("OBSTACEL AVOIDIN DISTANCE: %f", data.obstacle_avoid_dist);
-	ROS_INFO("GOAL: %f, %f, %f PI/rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
-*/
+	ROS_INFO("FIRST GOAL: %f, %f, %f PI/rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
+
 	
 
 	
@@ -98,9 +100,10 @@ int main(int argc, char **argv) {
 	std::string topic_laser;
 	std::string topic_speed;
 
-	node.param<string>("topic_pose", topic_pose, "odom");
-	node.param<string>("topic_laser", topic_laser, "base_scan");
-	node.param<string>("topic_speed", topic_speed, "cmd_vel");	
+	node.param<string>("topic_pose", topic_pose, "syros/global_odom");
+	//node.getParam("topic_pose", topic_pose);
+	node.param<string>("topic_laser", topic_laser, "syros/laser_laser");
+	node.param<string>("topic_speed", topic_speed, "syros/global_cmd_vel");	
 	
 	readParams(&parametr);
 	
@@ -109,6 +112,7 @@ int main(int argc, char **argv) {
 	
 	// read odomoetry messages
 	//ros::Subscriber subs_odom = node.subscribe("base_pose_ground_truth", 100, positionCallback);
+	ROS_INFO("Subscribing: %s", topic_pose.c_str());
 	ros::Subscriber subs_odom = node.subscribe(topic_pose, 100, positionCallback);
 	// read laser scan messages
 	ros::Subscriber subs_laser = node.subscribe( topic_laser, 100, laserScanCallback);
