@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <ros/console.h>
+#include <ros/time.h>
 
 #include "sensor_msgs/LaserScan.h"
 #include "nav_msgs/Odometry.h"
@@ -9,7 +10,6 @@
 #include "snd_data.h"
 
 #include <vector>
-
 
 
 SND_data data;
