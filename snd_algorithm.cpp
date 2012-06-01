@@ -619,7 +619,8 @@ void SND_algorithm::step( )
     setObsAvoidDelta( safetyDist );
     
     if( gDebug > 2 ) cout<< " Starting drive angle " << driveAngle.print() << "   " << driveAngle.dCastPi() << endl;
-    
+ 
+
     // Don't allow obstacles to change sign of sharp turns
     if( driveAngle.dCastPi() > M_PI/2.0 )
     {
@@ -642,7 +643,8 @@ void SND_algorithm::step( )
         driveAngle += obsAvoidDelta;
     }
 
-    double theta = driveAngle.dCast() - (driveAngle.dCast() > M_PI ? 2*M_PI : 0);
+    //double theta = driveAngle.dCast() - (driveAngle.dCast() > M_PI ? 2*M_PI : 0);
+      double theta = (robotPose.ori() - driveAngle).dCast();
     
     if( gDebug > 2 ) 
     {
@@ -654,18 +656,39 @@ void SND_algorithm::step( )
 
     theta = limit( theta, -M_PI/2.0, M_PI/2.0 );
 
-
-	 driveTurnRate = maxTurnRate*(2.0*theta/M_PI);
+    
+    
+/*
+    driveTurnRate = maxTurnRate*(2.0*theta/M_PI);
     driveTurnRate *= limit(pow((double)distToGoal.norm(), 0.5), 0.2, 1.0);
     driveTurnRate *= limit(pow((double)(distToClosestObstacle - robotRadius)/obstacleAvoidDist, 0.5), 0.5, 1.0);
-
-	 theta = limit( theta, -M_PI/4.0, M_PI/4.0 );
+    
+    theta = limit( theta, -M_PI/4.0, M_PI/4.0 );
 
     driveSpeed = maxSpeed;
     driveSpeed *= limit(pow((double)distToGoal.norm(), 0.5), 0.0, 1.0);
     driveSpeed *= limit(pow((double)(distToClosestObstacle - robotRadius)/obstacleAvoidDist, 0.5), 0.0, 1.0);
     driveSpeed *= limit((M_PI/6.0 - fabs(theta))/(M_PI/6.0),0.0,1.0);
+    //driveSpeed *= limit((M_PI/4.0 - fabs(theta))/(M_PI/4.0),0.0,1.0);
+  
+ */
+
     
+    driveTurnRate = maxTurnRate*(2.0*theta/M_PI);
+    //driveTurnRate *= limit(pow((double)distToGoal.norm(), 0.5), 0.2, 1.0);
+    //	driveTurnRate *= limit(pow((double)(distToClosestObstacle - robotRadius)/obstacleAvoidDist, 0.5), 0.5, 1.0);
+    
+    theta = limit( theta, -M_PI/4.0, M_PI/4.0 );
+    
+
+    driveSpeed = maxSpeed;
+    driveSpeed *= limit(2*(double)distToGoal.norm(), 0.0, 1.0);
+    driveSpeed *= limit((distToClosestObstacle - robotRadius)/obstacleAvoidDist, 0.0, 1.0);
+    driveSpeed *= limit((M_PI/6.0 - fabs(theta))/(M_PI/6.0),0.0,1.0);
+
+  
+  
+  
     robot->publishSpeed( driveSpeed, driveTurnRate );
 
 	 if( gDebug > 0 ) cout<< " Drive commands: " << driveSpeed << ", " << driveTurnRate << endl;

@@ -10,7 +10,7 @@
 #include "snd_data.h"
 
 #include <vector>
-
+#include <math.h>
 
 SND_data data;
 SND_algorithm snd(&data);
@@ -71,7 +71,7 @@ void readParams(ros::NodeHandle * node) {
 			std::vector<float> * f = new std::vector<float>();
 			f->push_back(static_cast<double>(gX[i]));
 			f->push_back(static_cast<double>(gY[i]));
-			f->push_back(static_cast<double>(gA[i]));
+			f->push_back(static_cast<double>(gA[i])*M_PI);
 			data.goal_vector.push_back(*f);
 	}
 	
@@ -83,7 +83,7 @@ void readParams(ros::NodeHandle * node) {
 	ROS_INFO("MAX SPEED: %f", data.max_speed);
 	ROS_INFO("TURN RATE: %f", data.max_turn_rate);
 	ROS_INFO("OBSTACEL AVOIDIN DISTANCE: %f", data.obstacle_avoid_dist);
-	ROS_INFO("FIRST GOAL: %f, %f, %f PI/rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
+	ROS_INFO("FIRST GOAL: %f, %f, %f rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
 
 	
 
