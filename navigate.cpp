@@ -6,14 +6,14 @@
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/Twist.h"
 
-#include "snd_algorithm.h"
+#include "snd.h"
 #include "snd_data.h"
 
 #include <vector>
-#include <math.h>
+
 
 SND_data data;
-SND_algorithm snd(&data);
+//SND_algorithm snd(&data);
 
 void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
@@ -71,7 +71,7 @@ void readParams(ros::NodeHandle * node) {
 			std::vector<float> * f = new std::vector<float>();
 			f->push_back(static_cast<double>(gX[i]));
 			f->push_back(static_cast<double>(gY[i]));
-			f->push_back(static_cast<double>(gA[i])*M_PI);
+			f->push_back(static_cast<double>(gA[i]));
 			data.goal_vector.push_back(*f);
 	}
 	
@@ -83,7 +83,7 @@ void readParams(ros::NodeHandle * node) {
 	ROS_INFO("MAX SPEED: %f", data.max_speed);
 	ROS_INFO("TURN RATE: %f", data.max_turn_rate);
 	ROS_INFO("OBSTACEL AVOIDIN DISTANCE: %f", data.obstacle_avoid_dist);
-	ROS_INFO("FIRST GOAL: %f, %f, %f rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
+	ROS_INFO("FIRST GOAL: %f, %f, %f PI/rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
 
 	
 
@@ -100,10 +100,10 @@ int main(int argc, char **argv) {
 	std::string topic_laser;
 	std::string topic_speed;
 
-	node.param<string>("topic_pose", topic_pose, "syros/global_odom");
+	node.param<std::string>("topic_pose", topic_pose, "syros/global_odom");
 	//node.getParam("topic_pose", topic_pose);
-	node.param<string>("topic_laser", topic_laser, "syros/laser_laser");
-	node.param<string>("topic_speed", topic_speed, "syros/global_cmd_vel");	
+	node.param<std::string>("topic_laser", topic_laser, "syros/laser_laser");
+	node.param<std::string>("topic_speed", topic_speed, "syros/global_cmd_vel");	
 	
 	readParams(&parametr);
 	
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 	ros::Rate loop_rate(10);
 	
 	while(ros::ok()) {
-		snd.step();
+		main_algorithm(&data);
 		
 		ros::spinOnce();
 		loop_rate.sleep();
