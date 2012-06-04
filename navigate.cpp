@@ -31,19 +31,28 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
 
 void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
+   ROS_INFO("INCOMMING laser data.");
 	std::vector<float> vec;
 	std::vector<float>::iterator it;
 	vec = msg->ranges;
-	
-	for (it = vec.begin(); it < vec.end(); it++) 
+
+	for (it = vec.begin(); it < vec.end(); it++) {
+		if (*it < msg->range_min)
+		   *it = msg->range_min;
+		if (*it > msg->range_max)
+		   *it = msg->range_max;
+	}
+/*	
+	   
 		if (*it < msg->range_min || *it > msg->range_max || *it < 0.0001) {
 			vec.erase(it);
 			printf("removed(max: %f) %f", msg->range_max, *it);
 		}
+*/
 	printf("laser - max: %f, incre: %f", msg->range_max, msg->angle_increment);
 	data.setLaserScan(msg->angle_increment, msg->range_max, vec);
 	
-	//ROS_INFO("Scanned.");
+	ROS_INFO("Scanned.");
 }
 
 void readParams(ros::NodeHandle * node) {
@@ -107,15 +116,17 @@ int main(int argc, char **argv) {
 	
 	readParams(&parametr);
 	
-	ros::Publisher pub = node.advertise<geometry_msgs::Twist>(topic_speed, 100);
+	ros::Publisher pub = node.advertise<geometry_msgs::Twist>(topic_speed, 3);
 	data.setPublisher(&pub);
 	
 	// read odomoetry messages
 	//ros::Subscriber subs_odom = node.subscribe("base_pose_ground_truth", 100, positionCallback);
 	ROS_INFO("Subscribing: %s", topic_pose.c_str());
-	ros::Subscriber subs_odom = node.subscribe(topic_pose, 100, positionCallback);
+	ros::Subscriber subs_odom = node.subscribe(topic_pose, 3, positionCallback);
 	// read laser scan messages
-	ros::Subscriber subs_laser = node.subscribe( topic_laser, 100, laserScanCallback);
+	ROS_INFO("Subscribing: %s", topic_laser.c_str());
+	ros::Subscriber subs_laser = node.subscribe( topic_laser, 3, laserScanCallback);
+	
 
 	
 	//ROS_INFO("SND ready...");
@@ -128,6 +139,8 @@ int main(int argc, char **argv) {
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
+	
+	data.publishSpeed(0, 0);
 	
 	
 	ros::spin();

@@ -224,10 +224,13 @@ void main_algorithm(SND_data * robot)
 		
 		while( iNumLPs <= 0 || iNumLPs > 100000 || fScanRes <= 0.0 || fScanRes > 1.0 )
 		{
-			if (gDebug > 0) std::cout << "Waiting for real data" << std::endl;
+			if (gDebug > 0) std::cout << "No real data" << std::endl;
+			/*
 				fMaxRange = robot->GetMaxRange();
 				fScanRes = robot->GetScanRes();
 				iNumLPs = robot->GetCount();
+			*/	
+			return;
 		}
 		
 		
@@ -291,7 +294,8 @@ void main_algorithm(SND_data * robot)
 		gettimeofday( &endTimeval, NULL );
 		gettimeofday( &startTimeval, NULL );
 
-		
+//		for(;;) {
+		   
          //if( gDebug > 0 ) PLAYER_MSG0(1,"LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP");
 			gapList.clear();
 			valleyList.clear();
@@ -350,7 +354,7 @@ void main_algorithm(SND_data * robot)
 				if( fabs(normalize(robot->GetYaw() - goalA)) < robot->goal_angle_tol )
 				{
 //					pp.SetSpeed(0.0, 0.0);
-					if( gDebug > 4 ) std::cout<< "Reached goal location" << std::endl;
+					if( gDebug > 4 ) std::cout<< "=========================Reached goal location" << std::endl;
                
 					robot->WaitForNextGoal();
 					if (! robot->hasNextGoal()) 
@@ -950,9 +954,9 @@ void main_algorithm(SND_data * robot)
 			
 			if( gDebug > 0 ) std::cout<< std::endl;
 			
-			//usleep( 50000 );
+			//usleep( 10000 );
 		
-		
+		//}		
 	}
 	catch (...)
     {
