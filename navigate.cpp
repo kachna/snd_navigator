@@ -10,6 +10,7 @@
 #include "snd_data.h"
 
 #include <vector>
+#include <cmath>
 
 
 SND_data data;
@@ -22,11 +23,13 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
   double x = msg->pose.pose.position.x;
   double y = msg->pose.pose.position.y;
   
-  double a = msg->pose.pose.orientation.z;
+  double a = 2*std::atan2(msg->pose.pose.orientation.z, msg->pose.pose.orientation.w);
   
   data.setPos(x, y, a);
   
   ROS_INFO("Position: [%f, %f, %f]", x, y, a);
+  
+  //main_algorithm(&data);
 }
 
 void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
@@ -109,23 +112,23 @@ int main(int argc, char **argv) {
 	std::string topic_laser;
 	std::string topic_speed;
 
-	node.param<std::string>("topic_pose", topic_pose, "syros/global_odom");
+	node.param<std::string>("topic_pose", topic_pose, "odom");
 	//node.getParam("topic_pose", topic_pose);
-	node.param<std::string>("topic_laser", topic_laser, "syros/laser_laser");
-	node.param<std::string>("topic_speed", topic_speed, "syros/global_cmd_vel");	
+	node.param<std::string>("topic_laser", topic_laser, "base_scan");
+	node.param<std::string>("topic_speed", topic_speed, "cmd_vel");	
 	
 	readParams(&parametr);
 	
-	ros::Publisher pub = node.advertise<geometry_msgs::Twist>(topic_speed, 3);
+	ros::Publisher pub = node.advertise<geometry_msgs::Twist>(topic_speed, 1);
 	data.setPublisher(&pub);
 	
 	// read odomoetry messages
 	//ros::Subscriber subs_odom = node.subscribe("base_pose_ground_truth", 100, positionCallback);
 	ROS_INFO("Subscribing: %s", topic_pose.c_str());
-	ros::Subscriber subs_odom = node.subscribe(topic_pose, 3, positionCallback);
+	ros::Subscriber subs_odom = node.subscribe(topic_pose, 1, positionCallback);
 	// read laser scan messages
 	ROS_INFO("Subscribing: %s", topic_laser.c_str());
-	ros::Subscriber subs_laser = node.subscribe( topic_laser, 3, laserScanCallback);
+	ros::Subscriber subs_laser = node.subscribe( topic_laser, 1, laserScanCallback);
 	
 
 	

@@ -45,7 +45,7 @@
 //using namespace PlayerCc;
 
 // Use gDebug to set verbosity of output, -1 for silent, 0 for hardly any output, 5 for normal debug
-int gDebug=5;
+int gDebug=9;
 
 
 
@@ -62,11 +62,6 @@ inline double dtor(double r)
   return r * M_PI / 180.0;
 }
 
-/// Normalize angle to domain -pi, pi
-inline double normalize(double z)
-{
-  return atan2(sin(z), cos(z));
-}
 
 
 

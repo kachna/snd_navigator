@@ -23,6 +23,12 @@
 
 #include "snd_data.h"
 
+/// Normalize angle to domain -pi, pi
+inline double normalize(double z)
+{
+  return atan2(sin(z), cos(z));
+}
+
 void main_algorithm(SND_data * robot);
 //extern void *__dso_handle __attribute__ ((__visibility__ ("hidden")));
 
