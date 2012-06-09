@@ -11,9 +11,13 @@
 
 #include <vector>
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
 
 SND_data data;
+std::ofstream file;
+
 //SND_algorithm snd(&data);
 
 void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
@@ -26,7 +30,9 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
   double a = 2*std::atan2(msg->pose.pose.orientation.z, msg->pose.pose.orientation.w);
   
   data.setPos(x, y, a);
-  
+   
+  file << x << "," << y << "," << a << std::endl;
+ 
   ROS_INFO("Position: [%f, %f, %f]", x, y, a);
   
   //main_algorithm(&data);
@@ -112,10 +118,15 @@ int main(int argc, char **argv) {
 	std::string topic_laser;
 	std::string topic_speed;
 
-	node.param<std::string>("topic_pose", topic_pose, "odom");
+	node.param<std::string>("/snd_navigator/topic_pose", topic_pose, "dom");
 	//node.getParam("topic_pose", topic_pose);
-	node.param<std::string>("topic_laser", topic_laser, "base_scan");
-	node.param<std::string>("topic_speed", topic_speed, "cmd_vel");	
+	node.param<std::string>("/snd_navigator/topic_laser", topic_laser, "base_scan");
+	node.param<std::string>("/snd_navigator/topic_speed", topic_speed, "cmd_vel");	
+	
+	std::string uuid;
+	node.param<std::string>("/snd_navigator/uuid", uuid, "-");
+	uuid = "pos_data/"+uuid;
+	file.open (uuid.c_str());
 	
 	readParams(&parametr);
 	
@@ -134,7 +145,7 @@ int main(int argc, char **argv) {
 	
 	//ROS_INFO("SND ready...");
 	
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(40);
 	
 	while(ros::ok()) {
 		main_algorithm(&data);
@@ -144,7 +155,7 @@ int main(int argc, char **argv) {
 	}
 	
 	data.publishSpeed(0, 0);
-	
+	file.close();
 	
 	ros::spin();
 	

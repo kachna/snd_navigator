@@ -45,7 +45,7 @@
 //using namespace PlayerCc;
 
 // Use gDebug to set verbosity of output, -1 for silent, 0 for hardly any output, 5 for normal debug
-int gDebug=9;
+int gDebug=-1;
 
 
 
@@ -764,6 +764,9 @@ void main_algorithm(SND_data * robot)
 				if (gDebug > 0) std::cout<< "!!! Obstacle inside robot radius !!!";
 				if (gDebug > 0) std::cout<< "   Stopping.";
 				iSTheta = static_cast<int> (fullLP.size()/2);
+				
+				//robot->exit();
+				return;
 			}
 			else if( pBestValley == NULL )
 			{
@@ -920,7 +923,10 @@ void main_algorithm(SND_data * robot)
 			theta = limit( theta, -M_PI/4.0, M_PI/4.0 );
 			
 			newSpeed = maxSpeed;
-			newSpeed *= limit(2*distToGoal,0.0,1.0);
+			
+			if (robot->shutSlowDown())
+				newSpeed *= limit(2*distToGoal,0.0,1.0);
+			
 			newSpeed *= limit((minObsDist-R)/safetyDistMax,0.0,1.0);
 			newSpeed *= limit((M_PI/6.0 - fabs(theta))/(M_PI/6.0),0.0,1.0);
 

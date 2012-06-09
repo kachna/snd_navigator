@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <ros/console.h>
+#include <ros/ros.h>
 
 #include "snd_data.h"
 
@@ -59,7 +60,15 @@ void SND_data::WaitForNextGoal() {
 	ROS_INFO("REACHED GOAL %f %f %f", goal_vector[0][0], goal_vector[0][1], goal_vector[0][2]);
 	goal_vector.erase(goal_vector.begin());
 	
-	if (!this->hasNextGoal()) 
-		ROS_INFO("NO MORE GOALS");
+	if (!this->hasNextGoal()) {
+		ROS_INFO("NO MORE GOALS, %d", goal_vector.size());
+		this->publishSpeed(0,0);
+		ros::shutdown();
+	}
+}
+
+void SND_data::exit() {
 	
+	ROS_INFO("Exiting ...");
+	ros::shutdown();
 }

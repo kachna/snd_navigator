@@ -62,13 +62,16 @@ class SND_data
 		void setGoal(double x, double y, double a) {goalX = x; goalY = y; goalA = a; };
 		void setGoal(std::vector< std::vector<float> > goals) { goal_vector = goals; };
 		
-		bool hasNextGoal() { if (goal_vector.size() > 0) true; else false; };
+		bool hasNextGoal() { if (goal_vector.size() > 0) return true; else return false; };
+		bool shutSlowDown() { if (goal_vector.size() == 1) return true; else return false; };
 		
 		void setLaserScan(double res, double range, std::vector<float> scans);
 		void setPublisher(ros::Publisher * pub) { publisher = pub; };
 		
 		void publishSpeed(double driveSpeed, double turnSpeed);
 		void WaitForNextGoal();
+		
+		void exit();
 	/*
 		void   SetSpeed(double velocity_modulus,
 							double velocity_angle);
