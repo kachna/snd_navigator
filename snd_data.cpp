@@ -43,7 +43,7 @@ void SND_data::publishSpeed(double driveSpeed, double turnSpeed) {
 	msg.angular.z = turnSpeed;
 
 	publisher->publish(msg);
-	ROS_INFO("publishing speed: %f, %f", driveSpeed, turnSpeed);
+	//ROS_INFO("publishing speed: %f, %f", driveSpeed, turnSpeed);
 		
 }
 

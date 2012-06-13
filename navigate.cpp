@@ -33,14 +33,14 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
    
   file << x << "," << y << "," << a << std::endl;
  
-  ROS_INFO("Position: [%f, %f, %f]", x, y, a);
+  //ROS_INFO("Position: [%f, %f, %f]", x, y, a);
   
   //main_algorithm(&data);
 }
 
 void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-   ROS_INFO("INCOMMING laser data.");
+   //ROS_INFO("INCOMMING laser data.");
 	std::vector<float> vec;
 	std::vector<float>::iterator it;
 	vec = msg->ranges;
@@ -58,10 +58,11 @@ void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 			printf("removed(max: %f) %f", msg->range_max, *it);
 		}
 */
-	printf("laser - max: %f, incre: %f", msg->range_max, msg->angle_increment);
+	//printf("laser - max: %f, incre: %f", msg->range_max, msg->angle_increment);
 	data.setLaserScan(msg->angle_increment, msg->range_max, vec);
 	
-	ROS_INFO("Scanned.");
+	//ROS_INFO("Scanned.");
+	//main_algorithm(&data);
 }
 
 void readParams(ros::NodeHandle * node) {
@@ -85,7 +86,7 @@ void readParams(ros::NodeHandle * node) {
 	//ROS_INFO("parsing goal X - %s ", gX.getType());
 
 	for (int i = 0; i < gX.size(); i++) {
-			std::cout <<" type: " << gX[i].getType() << std::endl;
+			//std::cout <<" type: " << gX[i].getType() << std::endl;
 			std::vector<float> * f = new std::vector<float>();
 			f->push_back(static_cast<double>(gX[i]));
 			f->push_back(static_cast<double>(gY[i]));
@@ -145,7 +146,7 @@ int main(int argc, char **argv) {
 	
 	//ROS_INFO("SND ready...");
 	
-	ros::Rate loop_rate(40);
+	ros::Rate loop_rate(10);
 	
 	while(ros::ok()) {
 		main_algorithm(&data);

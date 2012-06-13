@@ -137,7 +137,7 @@ int Valley::getValleyWidth( std::vector<double> fullLP )
 	{
 		if( fullLP[iSector] < m_pRisingDisc->m_dist )
 		{
-			std::cout<< "Dist " << fullLP[iSector] << " to sector " << iSector << " less than " << m_pRisingDisc->m_dist << std::endl;
+			//std::cout<< "Dist " << fullLP[iSector] << " to sector " << iSector << " less than " << m_pRisingDisc->m_dist << std::endl;
 			break;
 		}
 		
