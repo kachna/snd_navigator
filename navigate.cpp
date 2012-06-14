@@ -69,8 +69,8 @@ void readParams(ros::NodeHandle * node) {
 
 	double x,y,a;
 	node->getParam("robot_radius", data.robot_radius);
-	node->getParam("max_speed", data.max_speed);
-	node->getParam("max_turn_rate", data.max_turn_rate);
+	node->getParam("robot_speed", data.max_speed);
+	node->getParam("turn_rate", data.max_turn_rate);
 	node->getParam("avoid_dist", data.obstacle_avoid_dist);
 	node->getParam("min_gap", data.min_gap_width);
 
@@ -102,6 +102,7 @@ void readParams(ros::NodeHandle * node) {
 	ROS_INFO("MAX SPEED: %f", data.max_speed);
 	ROS_INFO("TURN RATE: %f", data.max_turn_rate);
 	ROS_INFO("OBSTACEL AVOIDIN DISTANCE: %f", data.obstacle_avoid_dist);
+	ROS_INFO("MIN GAP: %f", data.min_gap_width);
 	ROS_INFO("FIRST GOAL: %f, %f, %f PI/rad", data.getGoalX(), data.getGoalY(), data.getGoalA());
 
 	
