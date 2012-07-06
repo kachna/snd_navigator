@@ -3,6 +3,7 @@
  *
  *      Copyright 2007 Joey Durham <joey@engineering.ucsb.edu>
  *      modified by:   Luca Invernizzi <invernizzi.l@gmail.com>
+ *      for ROS modified by:   Petr Martinec <petr.martinec@gmail.com>
  *
  *      lp program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by

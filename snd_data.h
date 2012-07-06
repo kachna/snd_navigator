@@ -4,7 +4,6 @@
 
 #include <vector>
 
-//#include "spaces.h"
 
 #include <ros/ros.h>
 

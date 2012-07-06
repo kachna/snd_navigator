@@ -21,9 +21,12 @@ std::ofstream file;
 //SND_algorithm snd(&data);
 
 void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
+/*
+ * ROS subscriber function. It reads nav_msgs::Odometry msg
+ * 
+ */
 {
-  //ROS_INFO("I heard: [%s]", msg->data.c_str());
-  
+ 
   double x = msg->pose.pose.position.x;
   double y = msg->pose.pose.position.y;
   
@@ -33,14 +36,15 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
    
   file << x << "," << y << "," << a << std::endl;
  
-  //ROS_INFO("Position: [%f, %f, %f]", x, y, a);
-  
-  //main_algorithm(&data);
 }
 
 void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+/*
+ * ROS subscriber function. It reads sensor_msgs::LaserScan
+ * 
+ */
+
 {
-   //ROS_INFO("INCOMMING laser data.");
 	std::vector<float> vec;
 	std::vector<float>::iterator it;
 	vec = msg->ranges;
@@ -51,26 +55,23 @@ void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 		if (*it > msg->range_max)
 		   *it = msg->range_max;
 	}
-/*	
-	   
-		if (*it < msg->range_min || *it > msg->range_max || *it < 0.0001) {
-			vec.erase(it);
-			printf("removed(max: %f) %f", msg->range_max, *it);
-		}
-*/
-	//printf("laser - max: %f, incre: %f", msg->range_max, msg->angle_increment);
+
 	data.setLaserScan(msg->angle_increment, msg->range_max, vec);
 	
-	//ROS_INFO("Scanned.");
-	//main_algorithm(&data);
 }
 
-void readParams(ros::NodeHandle * node) {
+void readParams(ros::NodeHandle * node)
+/*
+ * It reads SND parametrs and lists of goals from parametr server. 
+ * 
+ */
+
+{
 
 	double x,y,a;
 	node->getParam("robot_radius", data.robot_radius);
-	node->getParam("robot_speed", data.max_speed);
-	node->getParam("turn_rate", data.max_turn_rate);
+	node->getParam("max_speed", data.max_speed);
+	node->getParam("max_turn_rate", data.max_turn_rate);
 	node->getParam("avoid_dist", data.obstacle_avoid_dist);
 	node->getParam("min_gap", data.min_gap_width);
 
@@ -120,23 +121,25 @@ int main(int argc, char **argv) {
 	std::string topic_laser;
 	std::string topic_speed;
 
+
+	// read names of topics
 	node.param<std::string>("/snd_navigator/topic_pose", topic_pose, "dom");
-	//node.getParam("topic_pose", topic_pose);
 	node.param<std::string>("/snd_navigator/topic_laser", topic_laser, "base_scan");
 	node.param<std::string>("/snd_navigator/topic_speed", topic_speed, "cmd_vel");	
 	
+	// generate uuid of experiment
 	std::string uuid;
 	node.param<std::string>("/snd_navigator/uuid", uuid, "-");
 	uuid = "pos_data/"+uuid;
 	file.open (uuid.c_str());
 	
+	// read SND parametrs and goals from parametr server
 	readParams(&parametr);
 	
 	ros::Publisher pub = node.advertise<geometry_msgs::Twist>(topic_speed, 1);
 	data.setPublisher(&pub);
 	
 	// read odomoetry messages
-	//ros::Subscriber subs_odom = node.subscribe("base_pose_ground_truth", 100, positionCallback);
 	ROS_INFO("Subscribing: %s", topic_pose.c_str());
 	ros::Subscriber subs_odom = node.subscribe(topic_pose, 1, positionCallback);
 	// read laser scan messages
@@ -145,11 +148,11 @@ int main(int argc, char **argv) {
 	
 
 	
-	//ROS_INFO("SND ready...");
 	
 	ros::Rate loop_rate(10);
 	
 	while(ros::ok()) {
+		// run algorithm
 		main_algorithm(&data);
 		
 		ros::spinOnce();
