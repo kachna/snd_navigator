@@ -4,7 +4,7 @@
      snd_navigator
 
   </description>
-  <author>Petr Martinec</author>
+  <author>Petr Martinec, petr.martinec@gmail.com</author>
   <license>GPL</license>
   <review status="unreviewed" notes=""/>
   <depend package="geometry_msgs" />
