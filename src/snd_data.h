@@ -59,7 +59,7 @@ class SND_data
 		double getGoalY() { return goal_vector[0][1]; }
 		double getGoalA() { return goal_vector[0][2]; }
 		
-		//void setGoal(double x, double y, double a) {goalX = x; goalY = y; goalA = a; };
+		void setGoal(double x, double y, double a) {goalX = x; goalY = y; goalA = a; };
 		void setGoal(std::vector< std::vector<float> > goals) { goal_vector = goals; };
 		
 		bool hasNextGoal() { if (goal_vector.size() > 0) return true; else return false; };

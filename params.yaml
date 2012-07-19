@@ -1,12 +1,12 @@
 snd_navigator/robot_radius: 0.06
-snd_navigator/max_speed: 0.4
-snd_navigator/min_gap: 0.16
-snd_navigator/max_turn_rate: 1.0
-snd_navigator/avoid_dist: 0.15
+snd_navigator/max_speed: 0.35
+snd_navigator/min_gap: 0.12
+snd_navigator/max_turn_rate: 0.6
+snd_navigator/avoid_dist: 0.08
 
-snd_navigator/topic_pose: 'syros/global_odom'
-snd_navigator/topic_laser: 'syros/laser_laser'
-snd_navigator/topic_speed: 'syros/global_cmd_vel'
+snd_navigator/topic_pose: 'odom'
+snd_navigator/topic_laser: 'base_scan'
+snd_navigator/topic_speed: 'cmd_vel'
 
 snd_navigator/goalsX: [0.25, 0.2, 1.0, 1.7, 1.8, 1.7, 1.17, 1.17, 1.4, 2.1, 3.1, 3.15, 2.7]
 snd_navigator/goalsY: [2.3, 0.83, 0.2, 0.2, 0.35, 0.5, 0.5, 0.80, 0.82, 1.42, 1.46, 2.95, 3.0]
