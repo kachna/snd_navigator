@@ -4,7 +4,7 @@
  *      Based on SND driver by Joey Durham <joey@engineering.ucsb.edu> and Luca Invernizzi <invernizzi.l@gmail.com>
  *      for Plaer/Stage project.
  * 
- *      Coded for ROS by:   Petr Martinec <petr.martinec@gmail.com>
+ *      Coded for ROS by: Petr Martinec <petr.martinec@gmail.com>
  *
  *      program is free software; you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
@@ -34,6 +34,11 @@
 
 
 SND_data::SND_data() {
+/*
+ * Init SND driver by default data
+ *
+ */
+   
 	scanRes = 0;
 	maxRange = 0;
 	count = 0;
@@ -55,6 +60,11 @@ SND_data::SND_data() {
 
 
 void SND_data::publishSpeed(double driveSpeed, double turnSpeed) {
+/*
+ * Send ROS Message (geometry_msgs::Twist) containg velocity commands
+ *
+ */
+   
 	
 	geometry_msgs::Twist msg;
 	
@@ -80,6 +90,12 @@ void SND_data::setLaserScan(double res, double range, std::vector<float> scans) 
 }
 
 void SND_data::WaitForNextGoal() {
+/*
+ * Robot removes goal from goal_vector when passed through it.
+ * Robot stops when last goal is reached (removed from goal_vector => goal_vector is empty).
+ * 
+ */
+   
 	
 	ROS_INFO("REACHED GOAL %f %f %f", goal_vector[0][0], goal_vector[0][1], goal_vector[0][2]);
 	goal_vector.erase(goal_vector.begin());

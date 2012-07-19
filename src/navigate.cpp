@@ -14,9 +14,11 @@
 #include <iostream>
 #include <fstream>
 
-
+// interface to algorithm
 SND_data data;
-std::ofstream file;
+
+// this store robot's position when position message is received. File name is generate by UUID
+//std::ofstream file;
 
 //SND_algorithm snd(&data);
 
@@ -34,7 +36,7 @@ void positionCallback(const nav_msgs::Odometry::ConstPtr& msg)
   
   data.setPos(x, y, a);
    
-  file << x << "," << y << "," << a << std::endl;
+  //file << x << "," << y << "," << a << std::endl;
  
 }
 
@@ -63,6 +65,16 @@ void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 void readParams(ros::NodeHandle * node)
 /*
  * It reads SND parametrs and lists of goals from parametr server. 
+ * You can push_back goals to data.goal_vector one by one too:
+ * 
+ *	std::vector<float> * f = new std::vector<float>();
+ *	f->push_back(gX);
+ *	f->push_back(gY);
+ *	f->push_back(gPhi);
+ *	data.goal_vector.push_back(*f);
+ *
+ * 
+ * Parameters are load to SND_data object
  * 
  */
 
@@ -112,6 +124,18 @@ void readParams(ros::NodeHandle * node)
 }
 
 int main(int argc, char **argv) {
+/*
+ * Main function
+ * 
+ * Reads names of topics (position of robot, laser scan data,
+ * topic whereto send velocity commands) from parameter server.
+ * 
+ * Reads SND parameters and goals from parameter server
+ * 
+ * Starts program loop and call main_algorithm(&data)
+ * 
+ */
+
 	
 	ros::init(argc, argv, "snd_navigator");
 	ros::NodeHandle node;
@@ -131,7 +155,7 @@ int main(int argc, char **argv) {
 	std::string uuid;
 	node.param<std::string>("/snd_navigator/uuid", uuid, "-");
 	uuid = "pos_data/"+uuid;
-	file.open (uuid.c_str());
+	//file.open (uuid.c_str());
 	
 	// read SND parametrs and goals from parametr server
 	readParams(&parametr);
@@ -151,6 +175,7 @@ int main(int argc, char **argv) {
 	
 	ros::Rate loop_rate(10);
 	
+	// start program loop
 	while(ros::ok()) {
 		// run algorithm
 		main_algorithm(&data);
@@ -160,7 +185,7 @@ int main(int argc, char **argv) {
 	}
 	
 	data.publishSpeed(0, 0);
-	file.close();
+	//file.close();
 	
 	ros::spin();
 	
